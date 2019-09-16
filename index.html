@@ -11,26 +11,78 @@
 </head>
 <body>
 <form method="post">
-        <div class="container">
+    <div class="container">
         <div class="row">
             <div class="col-md-6">
                 <div class="input-group">
                     <span class="input-group-addon" id="sizing-addon1">D&eacute;part</span>
                     <input type="text" id="depart" name="depart" class="form-control">
+                    <input type="hidden" id="x_depart" name="x_depart">
+                    <input type="hidden" id="y_depart" name="y_depart">
+
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="input-group">
                     <span class="input-group-addon" id="sizing-addon1">Destination</span>
                     <input type="text" id="destination" name="destination" class="form-control">
+                    <input type="hidden" id="x_destination" name="x_destination" >
+                    <input type="hidden" id="y_destination" name="y_destination">                    
                 </div>
             </div>
         </div>
         <div class="row">
-            <div class="col-md-6"><button type="submit" class="btn btn-primary" id="btnCreer">Estimer la course</button></div>
+            <div class="col-md-6"><button type="button" class="btn btn-primary" id="btnSubmit">Estimer la course</button></div>
         </div>
     </div>
 </form>
 
+
 </body>
+<script>
+
+// Alimentation du lieu de départ par autocompletion
+$("#depart").autocomplete({
+    source: function (request, response) {
+        $.ajax({
+            url: "https://api-adresse.data.gouv.fr/search/",
+            data: { q: request.term },
+            dataType: "json",
+            success: function (data) {
+                response($.map(data.features, function (item) {
+                    return { label: item.properties.name, value: item.properties.name, lat: item.properties.x, long : item.properties.y};
+                }));
+            }
+        });
+    },
+    select: function (event, ui) {
+            var x = ui.item.lat;
+            var y = ui.item.long;
+            $('#x_depart').val(x);
+            $('#y_depart').val(y);
+        }
+});
+
+// Alimentation du lieu d'arrivée par autocompletion
+$("#destination").autocomplete({
+    source: function (request, response) {
+        $.ajax({
+            url: "https://api-adresse.data.gouv.fr/search/",
+            data: { q: request.term },
+            dataType: "json",
+            success: function (data) {
+                response($.map(data.features, function (item) {
+                    return { label: item.properties.name, value: item.properties.name, lat: item.properties.x, long : item.properties.y};
+                }));
+            }
+        });
+    },
+    select: function (event, ui) {
+            var x = ui.item.lat;
+            var y = ui.item.long;
+            $('#x_destination').val(x);
+            $('#y_destination').val(y);
+        }
+});
+</script>
 </html>
