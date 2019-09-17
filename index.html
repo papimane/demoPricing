@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <head>
+
     <title>Demo PRICING</title>
     
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
@@ -15,10 +16,15 @@
     type="text/javascript" charset="utf-8"></script>
     <script src="https://js.api.here.com/v3/3.1/mapsjs-service.js"
     type="text/javascript" charset="utf-8"></script>
-
+    <style>
+    .row{
+        padding:10px;
+    }
+    
+    </style>
 </head>
 <body>
-<form method="post">
+
     <div class="container">
         <div class="row">
             <div class="col-md-6">
@@ -40,12 +46,14 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-6"><button type="button" class="btn btn-primary" id="btnSubmit">Estimer la course</button></div>
+            <div class="col-md-3"><button type="button" class="btn btn-primary" id="btnSubmit">Estimer la course</button></div>
+            <div class="col-md-9" style="text-align:center;" id="repUber"></div>
         </div>
     </div>
-</form>
-<div style="width: 640px; height: 480px" id="mapContainer"></div>
-
+    
+    <div class="container">
+            <div style="width: 1140px; height: 680px" id="mapContainer"></div>
+    </div>
 </body>
 <script>
 
@@ -58,7 +66,7 @@ $("#depart").autocomplete({
             dataType: "json",
             success: function (data) {
                 response($.map(data.features, function (item) {
-                    return { label: item.properties.name, value: item.properties.name, lat: item.geometry.coordinates[1], long : item.geometry.coordinates[0]};
+                    return { label: item.properties.name+','+item.properties.city, value: item.properties.name+','+item.properties.city, lat: item.geometry.coordinates[1], long : item.geometry.coordinates[0]};
                 }));
             }
         });
@@ -80,7 +88,7 @@ $("#destination").autocomplete({
             dataType: "json",
             success: function (data) {
                 response($.map(data.features, function (item) {
-                    return { label: item.properties.name, value: item.properties.name, lat: item.geometry.coordinates[1], long : item.geometry.coordinates[0]};
+                    return { label: item.properties.name+','+item.properties.city, value: item.properties.name+','+item.properties.city, lat: item.geometry.coordinates[1], long : item.geometry.coordinates[0]};
                 }));
             }
         });
@@ -164,6 +172,33 @@ var onResult = function(result) {
 
 
 $("#btnSubmit").click(function(){
+    $("#repUber").html("");
+    $("#repUber").removeAttr('style');
+    if($("#x_depart").val() === "" || $("#y_depart").val() ===""|| $("#x_destination").val() ==="" || $("#y_destination").val()==="")
+    {
+        $("#repUber").css({"background-color": "red", "color": "#ffffff"});
+        $("#repUber").html("Veuillez s&eacute;lectionner des adresses de d&eacute;part et de destination valides.");
+    }
+    else {
+
+    $.ajax({
+            url: 'https://api.uber.com/v1.2/estimates/price?start_latitude='+ $("#x_depart").val() + '&start_longitude='+ $("#y_depart").val() +'&end_latitude=' + $("#x_destination").val() + '&end_longitude=' + $("#y_destination").val() ,
+            type: 'GET',
+            headers: {
+                'Authorization': 'Bearer JA.VUNmGAAAAAAAEgASAAAABwAIAAwAAAAAAAAAEgAAAAAAAAH4AAAAFAAAAAAADgAQAAQAAAAIAAwAAAAOAAAAzAAAABwAAAAEAAAAEAAAAD2P8qWtovyMIChmb9Cg3dWnAAAAY4_lw4GxzYV9lREiFHUyCybxg8sSxKPXeeCRqzTO8ndV3jWfX8MAS3MT6u98Ma9pNHXTIFjgunAewmmKTYOkqAptEdRC-3RzZvTjSaGUCv7c5g9MLxq061Fl17FpOSw2xEQAU5y4aHg23UpjfT1Jw9-9Ij9dKkJtp_O-wCOcHy6_LWyP6WT6oyE1MqfHV5yziu6aibWcNrb86WnbNv0T_r2HvuOadWIADAAAADXNJacKe90hct4WAiQAAABiMGQ4NTgwMy0zOGEwLTQyYjMtODA2ZS03YTRjZjhlMTk2ZWU',
+                'Accept-Language': 'en_US',
+                'Content-Type':'application/json',
+            },
+            success: function (result) {
+               $("#repUber").html("");
+            },
+            error: function (error, textStatus, request) {
+                $("#repUber").css({"background-color": "red", "color": "#ffffff"});
+                $("#repUber").html("Oups!! Uber ne vous dira pas combien va vous couter la course... Votre connexion a rencontr&eacute; une erreur");
+            }
+        });
+
+
     
     // Create the parameters for the routing request:
     var routingParameters = {
@@ -188,7 +223,7 @@ $("#btnSubmit").click(function(){
     function(error) {
     alert(error.message);
     });
-
+}
 });
 
 </script>
