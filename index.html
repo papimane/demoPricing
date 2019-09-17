@@ -181,16 +181,19 @@ $("#btnSubmit").click(function(){
     }
     else {
 
+        
+
     $.ajax({
             url: 'https://api.uber.com/v1.2/estimates/price?start_latitude='+ $("#x_depart").val() + '&start_longitude='+ $("#y_depart").val() +'&end_latitude=' + $("#x_destination").val() + '&end_longitude=' + $("#y_destination").val() ,
             type: 'GET',
             headers: {
-                'Authorization': 'Bearer JA.VUNmGAAAAAAAEgASAAAABwAIAAwAAAAAAAAAEgAAAAAAAAH4AAAAFAAAAAAADgAQAAQAAAAIAAwAAAAOAAAAzAAAABwAAAAEAAAAEAAAAD2P8qWtovyMIChmb9Cg3dWnAAAAY4_lw4GxzYV9lREiFHUyCybxg8sSxKPXeeCRqzTO8ndV3jWfX8MAS3MT6u98Ma9pNHXTIFjgunAewmmKTYOkqAptEdRC-3RzZvTjSaGUCv7c5g9MLxq061Fl17FpOSw2xEQAU5y4aHg23UpjfT1Jw9-9Ij9dKkJtp_O-wCOcHy6_LWyP6WT6oyE1MqfHV5yziu6aibWcNrb86WnbNv0T_r2HvuOadWIADAAAADXNJacKe90hct4WAiQAAABiMGQ4NTgwMy0zOGEwLTQyYjMtODA2ZS03YTRjZjhlMTk2ZWU',
+                'Authorization': 'Bearer JA.VUNmGAAAAAAAEgASAAAABwAIAAwAAAAAAAAAEgAAAAAAAAH4AAAAFAAAAAAADgAQAAQAAAAIAAwAAAAOAAAAzAAAABwAAAAEAAAAEAAAAAmKc4FU6kNviS0fWQjNhU6nAAAAmvTwVAHzLchk9p_iAE8SpUQQipvs_0j-WZwaziUwMZ7G1VJXFwBer3Kye6XlwoCzLj8BB2JCXVLDHjS9qyRzMxpHYvAmzT2duj9Hmt8SmE-kq8-Q6695Au_217IqAFQBinqfEfiYXJow1HtahDAu6OAtAdbjz4TEymuMhocYyHOVx8Q1bdptb39XtSc1YqW5R5csycCa6sSeK08KHNyzX8rmtpZ7YXIADAAAACiHhHCgrgQnQAfPKCQAAABiMGQ4NTgwMy0zOGEwLTQyYjMtODA2ZS03YTRjZjhlMTk2ZWU',
                 'Accept-Language': 'en_US',
                 'Content-Type':'application/json',
             },
             success: function (result) {
-               $("#repUber").html("");
+               //Resultat à parser pour afficher les prix
+               $("#repUber").html(result);
             },
             error: function (error, textStatus, request) {
                 $("#repUber").css({"background-color": "red", "color": "#ffffff"});
